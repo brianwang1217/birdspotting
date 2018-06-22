@@ -71,7 +71,7 @@ def find_max_val(dict, num):
 			if val > max_val:
 				max_val = val
 				max_key = key
-		top_keys.append(max_key)
+		top_keys.append(api.get_user(max_key).screen_name)
 		dict[max_key] = -1
 	return top_keys
 
