@@ -16,6 +16,9 @@ def test_methods(user_handle, num_rec):
 
 	friends_array = []
 
+	if len(sys.argv):
+		print("you're missing one or two parameters! this script takes in two arguments: \'python main.py [user_handle] [number_of_recommended_users]\'")
+		sys.exit()
 	try:
 		current_user = api.get_user(user_handle)
 	except tweepy.error.TweepError as e:
