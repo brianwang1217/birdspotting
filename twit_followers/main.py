@@ -11,12 +11,22 @@ following = []
 friend_dict = dict()
 
 
-def test_methods():
+def test_methods(user_handle, num_rec):
 	mutual_dict = dict()
 
 	friends_array = []
 
-	current_user = api.get_user("Lil_Drizzles")
+	try:
+		current_user = api.get_user(user_handle)
+	except tweepy.error.TweepError as e:
+		# if user_handle doesn't exist
+		if e.api_code == 50:
+			print("this handle doesn't exist. try another one!")
+			sys.exit()
+		# if user_handle is private
+		elif e.api_code == 150:
+			print("this handle is private. try another one!")
+			sys.exit()
 	#print(current_user)
 	curr_friends = api.friends_ids(current_user.id)
 	for friend in curr_friends:
@@ -38,11 +48,13 @@ def test_methods():
 				else:
 					mutual_dict[mutual_friend] += 1
 					
-		except:
+		except tweepy.error.TweepError as e:
+			# note: 150 = private acc, 420 = disconnect
 			pass
 
-	return (find_max_val(mutual_dict, 15))
+	return (find_max_val(mutual_dict, num_rec))
 
+# return keys with top _num_ vals in dictionary
 def find_max_val(dict, num):
 	top_keys = []
 	for i in range(0, num):
@@ -111,7 +123,7 @@ def print_top_recommended(rec_dict):
 
 
 if __name__ == "__main__":
-	print(test_methods())
+	print(test_methods(sys.argv[0], sys.argv[1]))
 
 	#following = get_following("Lil_Drizzles")
 
