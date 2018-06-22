@@ -51,7 +51,7 @@ def test_methods(user_handle, num_rec):
 # return keys with top _num_ vals in dictionary
 def find_max_val(d, num):
 	top_keys = []
-	for i in range(0, num):
+	for i in range(0, min(num, len(d.keys()))):
 		max_val = 0
 		max_key = None
 		for key, val in d.items():
@@ -59,7 +59,7 @@ def find_max_val(d, num):
 				max_val = val
 				max_key = key
 		top_keys.append(api.get_user(max_key).screen_name)
-		d[max_key] = -1
+		del d[max_key];
 	return top_keys
 
 
