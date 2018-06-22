@@ -16,7 +16,8 @@ def test_methods(user_handle, num_rec):
 
 	friends_array = []
 
-	if len(sys.argv):
+	# checking for proper arguments
+	if len(sys.argv) != 3:
 		print("you're missing one or two parameters! this script takes in two arguments: \'python main.py [user_handle] [number_of_recommended_users]\'")
 		sys.exit()
 	try:
@@ -24,7 +25,7 @@ def test_methods(user_handle, num_rec):
 	except tweepy.error.TweepError as e:
 		# if user_handle doesn't exist
 		if e.api_code == 50:
-			print("this handle doesn't exist. try another one!")
+			print(user_handle + " doesn't exist. try another one!")
 			sys.exit()
 		# if user_handle is private
 		elif e.api_code == 150:
@@ -45,11 +46,14 @@ def test_methods(user_handle, num_rec):
 			#print(api.get_user(f).screen_name)
 			mutual_friends_array = api.friends_ids(f)
 			for mutual_friend in mutual_friends_array:
-				print(api.get_user(mutual_friend).screen_name)
-				if mutual_friend not in mutual_dict:
-					mutual_dict[mutual_friend] = 1 
-				else:
-					mutual_dict[mutual_friend] += 1
+				#print(api.get_user(mutual_friend).screen_name)
+
+				# make sure you aren't following user already
+				if current_user not in api.followers_ids(mutual_friend):
+					if mutual_friend not in mutual_dict:
+						mutual_dict[mutual_friend] = 1 
+					else:
+						mutual_dict[mutual_friend] += 1
 					
 		except tweepy.error.TweepError as e:
 			# note: 150 = private acc, 420 = disconnect
@@ -126,7 +130,7 @@ def print_top_recommended(rec_dict):
 
 
 if __name__ == "__main__":
-	print(test_methods(sys.argv[0], sys.argv[1]))
+	print(test_methods(sys.argv[1], sys.argv[2]))
 
 	#following = get_following("Lil_Drizzles")
 
