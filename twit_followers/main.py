@@ -49,17 +49,17 @@ def test_methods(user_handle, num_rec):
 	return find_max_val(mutual_dict, num_rec)
 
 # return keys with top _num_ vals in dictionary
-def find_max_val(dict, num):
+def find_max_val(d, num):
 	top_keys = []
 	for i in range(0, num):
 		max_val = 0
 		max_key = None
-		for key, val in dict.items():
+		for key, val in d.items():
 			if val > max_val:
 				max_val = val
 				max_key = key
 		top_keys.append(api.get_user(max_key).screen_name)
-		dict[max_key] = -1
+		d[max_key] = -1
 	return top_keys
 
 
