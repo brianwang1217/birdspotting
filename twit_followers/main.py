@@ -1,7 +1,7 @@
 import os
 import tweepy
 import config
-
+import sys
 
 auth = tweepy.OAuthHandler(config.api_key, config.api_secret)
 auth.set_access_token(config.access_token, config.access_secret)
@@ -9,10 +9,11 @@ api = tweepy.API(auth, wait_on_rate_limit=True)
 
 following = []
 friend_dict = dict()
-mutual_dict = dict()
 
 
 def test_methods():
+	mutual_dict = dict()
+
 	friends_array = []
 
 	current_user = api.get_user("Lil_Drizzles")
@@ -32,9 +33,33 @@ def test_methods():
 			mutual_friends_array = api.friends_ids(f)
 			for mutual_friend in mutual_friends_array:
 				print(api.get_user(mutual_friend).screen_name)
+				if mutual_friend not in mutual_dict:
+					mutual_dict[mutual_friend] = 1 
+				else:
+					mutual_dict[mutual_friend] += 1
+					
 		except:
 			pass
 
+	return (find_max_val(mutual_dict, 15))
+
+def find_max_val(dict, num):
+	top_keys = []
+	for i in range(0, num):
+		max_val = 0
+		max_key = None
+		for key, val in dict.items():
+			if val > max_val:
+				max_val = val
+				max_key = key
+		top_keys.append(max_key)
+		dict[max_key] = -1
+	return top_keys
+
+
+
+
+# not in use
 def get_following(user_handle):
 
 	# The user and his/her ID, to be used in search.
@@ -59,6 +84,7 @@ def get_following(user_handle):
 			'''
 	return temp_following
 
+# not in use
 def get_recommended_dict(following_array):
 	temp_dict = dict()
 
@@ -73,18 +99,19 @@ def get_recommended_dict(following_array):
 
 	return temp_dict
 
-def print_top_ten_recommended(rec_dict):
-	temp_top_ten = []
+# not in use
+def print_top_recommended(rec_dict):
+	temp_top = []
 	for i in range(0, 10):
-		temp_top_ten.append(max(rec_dict, key=lambda k: rec_dict[k]))
+		temp_top.append(max(rec_dict, key=lambda k: rec_dict[k]))
 
-	for user in temp_top_ten:
+	for user in temp_top:
 		print(user)
-	return temp_top_ten
+	return temp_top
 
 
 if __name__ == "__main__":
-	test_methods()
+	print(test_methods())
 
 	#following = get_following("Lil_Drizzles")
 
