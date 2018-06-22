@@ -132,7 +132,7 @@ def print_top_recommended(rec_dict):
 if __name__ == "__main__":
 	print(test_methods(sys.argv[1], sys.argv[2]))
 
-	#following = get_following("Lil_Drizzles")
+	#following = get_following("_")
 
 	#print("hi")
 
