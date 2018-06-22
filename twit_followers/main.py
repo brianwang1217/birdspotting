@@ -2,6 +2,7 @@ import os
 import tweepy
 import config
 import sys
+from collections import defaultdict
 
 auth = tweepy.OAuthHandler(config.api_key, config.api_secret)
 auth.set_access_token(config.access_token, config.access_secret)
@@ -12,7 +13,7 @@ friend_dict = dict()
 
 
 def test_methods(user_handle, num_rec):
-	mutual_dict = dict()
+	mutual_dict = defaultdict(int)
 
 	friends_array = []
 
@@ -26,40 +27,26 @@ def test_methods(user_handle, num_rec):
 		# if user_handle doesn't exist
 		if e.api_code == 50:
 			print(user_handle + " doesn't exist. try another one!")
-			sys.exit()
 		# if user_handle is private
 		elif e.api_code == 150:
 			print("this handle is private. try another one!")
-			sys.exit()
+		sys.exit()
 	#print(current_user)
-	curr_friends = api.friends_ids(current_user.id)
-	for friend in curr_friends:
-		#print (api.get_user(friend).screen_name)
 
-		# Gives ID of friend user.
-		friends_array.append(friend)
-
-	for f in friends_array:
-		mutual_friends_array = []
-
+	for f in api.friends_ids(current_user.id):
 		try:
 			#print(api.get_user(f).screen_name)
-			mutual_friends_array = api.friends_ids(f)
-			for mutual_friend in mutual_friends_array:
+			for mutual_friend in api.friends_ids(f):
 				#print(api.get_user(mutual_friend).screen_name)
-
 				# make sure you aren't following user already
-				if current_user not in api.followers_ids(mutual_friend):
-					if mutual_friend not in mutual_dict:
-						mutual_dict[mutual_friend] = 1 
-					else:
-						mutual_dict[mutual_friend] += 1
+				if api.exists_frienship(current_user, mutual_friend):
+					mutual_dict[mutual_friend] += 1
 					
 		except tweepy.error.TweepError as e:
 			# note: 150 = private acc, 420 = disconnect
 			pass
 
-	return (find_max_val(mutual_dict, num_rec))
+	return find_max_val(mutual_dict, num_rec)
 
 # return keys with top _num_ vals in dictionary
 def find_max_val(dict, num):
